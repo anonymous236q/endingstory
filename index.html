@@ -42,7 +42,7 @@
 </head>
 <body>
 
-  <!-- 🔊 Background Audio (muted first, then fades in) -->
+  <!-- 🔊 Background Audio (Muted initially, fades in with JavaScript) -->
   <audio id="bg-audio" autoplay loop muted>
     <source src="aud.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
@@ -76,30 +76,28 @@
     <div class="signature">– niii Shivv</div>
   </div>
 
-  <!-- ✅ JS to fade-in volume on load -->
+  <!-- ✅ JS to fade-in audio volume smoothly -->
   <script>
     window.addEventListener("load", function () {
       const audio = document.getElementById("bg-audio");
       const playPromise = audio.play();
 
       if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            audio.muted = false;
-            audio.volume = 0;
-            let vol = 0;
-            const fadeIn = setInterval(() => {
-              if (vol < 1) {
-                vol += 0.02;
-                audio.volume = Math.min(vol, 1);
-              } else {
-                clearInterval(fadeIn);
-              }
-            }, 100); // Fade-in speed
-          })
-          .catch(error => {
-            console.warn("Autoplay blocked:", error);
-          });
+        playPromise.then(() => {
+          audio.muted = false;
+          audio.volume = 0;
+          let vol = 0;
+          const fadeIn = setInterval(() => {
+            if (vol < 1) {
+              vol += 0.02;
+              audio.volume = Math.min(vol, 1);
+            } else {
+              clearInterval(fadeIn);
+            }
+          }, 100); // 0.02 every 100ms = 5 seconds total
+        }).catch(error => {
+          console.warn("Autoplay blocked or failed:", error);
+        });
       }
     });
   </script>
